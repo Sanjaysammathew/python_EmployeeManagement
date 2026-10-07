@@ -1,22 +1,20 @@
 from fastapi import APIRouter
-from models import EmployeeCreate
 
-from crud.employee_crud import (
-    get_students,
-    post_students
+from schemas.employee_schema import (
+    EmployeeCreate,
+    EmployeeCreatedResponse,
+    EmployeeResponse,
 )
+from services import employee_service
 
-router = APIRouter(
-    prefix="/employees",
-    tags=["Employee Details"]
-)
+router = APIRouter(prefix="/employees", tags=["Employee Details"])
 
 
-@router.get("/")
+@router.get("/", response_model=list[EmployeeResponse])
 def get_employee():
-    return get_students()
+    return employee_service.get_all_employees()
 
 
-@router.post("/")
+@router.post("/", response_model=EmployeeCreatedResponse)
 def create_employee(employee: EmployeeCreate):
-    return post_students(employee)
+    return employee_service.create_employee(employee)

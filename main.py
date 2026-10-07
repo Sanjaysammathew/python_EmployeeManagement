@@ -1,6 +1,8 @@
-from fastapi import FastAPI
-from routers.employee_router import router
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+
+from routers.employee_router import router as employee_router
 
 app = FastAPI()
 
-app.include_router(router)
+app.include_router(employee_router)
