@@ -1,13 +1,13 @@
-import psycopg2
+import psycopg
 
 from config import config
 
-def get_connection() :
-    return psycopg2.connect(
 
+def get_connection():
+    return psycopg.connect(
         host=config.DB_HOST,
-        PORT=config.DB_PORT,
-        db_name=config.DB_NAME,
+        port=config.DB_PORT,
+        dbname=config.DB_NAME,
         user=config.DB_USER,
         password=config.DB_PASSWORD
     )

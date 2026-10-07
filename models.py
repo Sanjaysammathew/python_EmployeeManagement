@@ -1,13 +1,8 @@
-from pydantic import BaseModel,EmailStr
+from pydantic import BaseModel
 
-class EmployeeCreate(BaseModel) :
-    name:str
-    email:EmailStr
-    department:str
-    salary:int
 
-class employeeUpdate(BaseModel) :
-    name:str
-    email:EmailStr
-    department:str
-    salary:int
+class EmployeeCreate(BaseModel):
+    id: int
+    name: str
+    salary: int
+    experience: int

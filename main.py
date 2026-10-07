@@ -1,8 +1,6 @@
 from fastapi import FastAPI
+from routers.employee_router import router
 
 app = FastAPI()
 
-@app.get("/")
-def hello():
-    print("Hello")
-    return {"message": "Hello"}
+app.include_router(router)
