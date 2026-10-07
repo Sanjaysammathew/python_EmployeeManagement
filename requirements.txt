@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+psycopg[binary]
+pydantic
+python-dotenv
+
+# pip install -r requirements.txt
+# uvicorn main:app --reload
+
+# python -m venv venv
+
+# .\.venv\Scripts\Activate.ps1
