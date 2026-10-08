@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from schemas.employee_schema import EmployeeCreate
+from schemas.employee_schema import EmployeeCreate, EmployeeUpdate
 from services import employee_service
 
 router = APIRouter(prefix="/employees")
@@ -24,6 +24,11 @@ async def create_employee(employee: EmployeeCreate):
 @router.put("/{employee_id}")
 async def update_employee(employee_id: int, employee: EmployeeCreate):
     return await employee_service.update_employee(employee_id, employee)
+
+
+@router.patch("/{employee_id}")
+async def patch_employee(employee_id: int, employee: EmployeeUpdate):
+    return await employee_service.patch_employee(employee_id, employee)
 
 
 @router.delete("/{employee_id}")

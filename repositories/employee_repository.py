@@ -148,3 +148,48 @@ async def delete(employee_id: int) -> None:
 
     finally:
         await connection.close()
+
+
+async def patch(employee_id: int, employee: dict, changed_fields: set):
+    connection = await get_connection()
+
+    try:
+        async with connection.cursor() as cursor:
+
+            set_parts = []
+            values = []
+
+            if "name" in changed_fields:
+                set_parts.append("name = %s")
+                values.append(employee["name"])
+
+            if "salary" in changed_fields:
+                set_parts.append("salary = %s")
+                values.append(employee["salary"])
+
+            if "experience" in changed_fields:
+                set_parts.append("experience = %s")
+                values.append(employee["experience"])
+
+            if not set_parts:
+                return
+
+            query = f"""
+                UPDATE employee
+                SET {", ".join(set_parts)}
+                WHERE id = %s
+            """
+
+            values.append(employee_id)
+
+            await cursor.execute(query, values)
+
+            if cursor.rowcount == 0:
+                raise HTTPException(
+                    status_code=404, detail=f"Employee with id {employee_id} not found"
+                )
+
+        await connection.commit()
+
+    finally:
+        await connection.close()

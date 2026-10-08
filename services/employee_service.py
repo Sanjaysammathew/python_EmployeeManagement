@@ -1,6 +1,7 @@
 from repositories import employee_repository
-from schemas.employee_schema import EmployeeCreate
+from schemas.employee_schema import EmployeeCreate, EmployeeUpdate
 from services.salary_service import SalaryService
+from fastapi import HTTPException
 
 salary_service = SalaryService()
 
@@ -69,3 +70,36 @@ async def delete_employee(employee_id: int):
         "message": "Employee deleted successfully",
         "id": employee_id,
     }
+
+
+async def patch_employee(employee_id: int, employee: EmployeeUpdate):
+
+    existing_employee = await employee_repository.get_by_id(employee_id)
+
+    if existing_employee is None:
+        raise HTTPException(
+            status_code=404, detail=f"Employee with id {employee_id} not found"
+        )
+
+    updates = employee.model_dump(exclude_unset=True)
+
+    name = updates.get("name", existing_employee["name"])
+
+    salary = updates.get("salary", existing_employee["salary"])
+
+    experience = updates.get("experience", existing_employee["experience"])
+
+    salary_details = salary_service.calculate(salary, experience)
+
+    employee_record = {
+        "name": name,
+        "salary": salary,
+        "experience": experience,
+        **salary_details,
+    }
+
+    await employee_repository.patch(
+        employee_id, employee_record, employee.model_fields_set
+    )
+
+    return employee_record

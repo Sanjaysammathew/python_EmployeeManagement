@@ -1,27 +1,21 @@
+from decimal import Decimal
+
+
 class SalaryService:
 
-    def calculate_annual_salary(self, salary: int) -> int:
-        return salary * 12
+    def calculate_bonus(self, salary, experience):
+        return salary * Decimal("0.10")
 
-    def calculate_bonus(self, salary: int, experience: int) -> float:
-        if experience >= 3:
-            return salary * 0.10
+    def calculate_tax(self, salary):
+        return salary * Decimal("0.05")
 
-        return 0
+    def calculate(self, salary, experience):
 
-    def calculate_tax(self, salary: int, experience: int) -> float:
-        if experience >= 3:
-            return salary * 0.05
-
-        return 0
-
-    def calculate(self, salary: int, experience: int) -> dict:
-
-        annual_salary = self.calculate_annual_salary(salary)
+        annual_salary = salary * 12
 
         bonus = self.calculate_bonus(salary, experience)
 
-        tax = self.calculate_tax(salary, experience)
+        tax = self.calculate_tax(salary)
 
         net_salary = annual_salary + bonus - tax
 
