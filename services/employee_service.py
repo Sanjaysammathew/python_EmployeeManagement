@@ -5,15 +5,15 @@ from services.salary_service import SalaryService
 salary_service = SalaryService()
 
 
-def get_all_employees():
-    return employee_repository.get_all()
+async def get_all_employees():
+    return await employee_repository.get_all()
 
 
-def get_employee_by_id(employee_id: int):
-    return employee_repository.get_by_id(employee_id)
+async def get_employee_by_id(employee_id: int):
+    return await employee_repository.get_by_id(employee_id)
 
 
-def create_employee(employee: EmployeeCreate):
+async def create_employee(employee: EmployeeCreate):
 
     salary_details = salary_service.calculate(employee.salary, employee.experience)
 
@@ -28,7 +28,8 @@ def create_employee(employee: EmployeeCreate):
         "net_salary": salary_details["net_salary"],
     }
 
-    employee_repository.create(employee_record)
+    # Database operation → await
+    await employee_repository.create(employee_record)
 
     return {
         "message": "Employee created successfully",
@@ -37,8 +38,9 @@ def create_employee(employee: EmployeeCreate):
     }
 
 
-def update_employee(employee_id: int, employee: EmployeeCreate):
+async def update_employee(employee_id: int, employee: EmployeeCreate):
 
+    # Normal Python calculation → NO await
     salary_details = salary_service.calculate(employee.salary, employee.experience)
 
     employee_record = {
@@ -48,7 +50,8 @@ def update_employee(employee_id: int, employee: EmployeeCreate):
         **salary_details,
     }
 
-    employee_repository.update(employee_id, employee_record)
+    # Database operation → await
+    await employee_repository.update(employee_id, employee_record)
 
     return {
         "message": "Employee updated successfully",
@@ -57,8 +60,12 @@ def update_employee(employee_id: int, employee: EmployeeCreate):
     }
 
 
-def delete_employee(employee_id: int):
+async def delete_employee(employee_id: int):
 
-    employee_repository.delete(employee_id)
+    # Database operation → await
+    await employee_repository.delete(employee_id)
 
-    return {"message": "Employee deleted successfully", "id": employee_id}
+    return {
+        "message": "Employee deleted successfully",
+        "id": employee_id,
+    }

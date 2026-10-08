@@ -7,25 +7,25 @@ router = APIRouter(prefix="/employees")
 
 
 @router.get("/")
-def get_employees():
-    return employee_service.get_all_employees()
+async def get_employees():
+    return await employee_service.get_all_employees()
 
 
 @router.get("/{employee_id}")
-def get_employee_by_id(employee_id: int):
-    return employee_service.get_employee_by_id(employee_id)
+async def get_employee_by_id(employee_id: int):
+    return await employee_service.get_employee_by_id(employee_id)
 
 
 @router.post("/")
-def create_employee(employee: EmployeeCreate):
-    return employee_service.create_employee(employee)
+async def create_employee(employee: EmployeeCreate):
+    return await employee_service.create_employee(employee)
 
 
 @router.put("/{employee_id}")
-def update_employee(employee_id: int, employee: EmployeeCreate):
-    return employee_service.update_employee(employee_id, employee)
+async def update_employee(employee_id: int, employee: EmployeeCreate):
+    return await employee_service.update_employee(employee_id, employee)
 
 
 @router.delete("/{employee_id}")
-def delete_employee(employee_id: int):
-    return employee_service.delete_employee(employee_id)
+async def delete_employee(employee_id: int):
+    return await employee_service.delete_employee(employee_id)

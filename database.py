@@ -1,10 +1,11 @@
 import psycopg
 from psycopg.rows import dict_row
 from config.settings import settings as config
+from psycopg import AsyncConnection
 
 
 def get_connection():
-    return psycopg.connect(
+    return psycopg.AsyncConnection.connect(
         host=config.DB_HOST,
         port=config.DB_PORT,
         dbname=config.DB_NAME,

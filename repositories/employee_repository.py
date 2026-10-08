@@ -1,26 +1,25 @@
 from psycopg.errors import UniqueViolation
-
 from database import get_connection
 from fastapi import HTTPException
 
 
-def get_all():
-    connection = get_connection()
+async def get_all():
+    connection = await get_connection()
 
     try:
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM employee")
-            return cursor.fetchall()
+        async with connection.cursor() as cursor:
+            await cursor.execute("SELECT * FROM employee")
+            return await cursor.fetchall()
 
     finally:
-        connection.close()
+        await connection.close()
 
 
-def get_by_id(employee_id: int):
-    connection = get_connection()
+async def get_by_id(employee_id: int):
+    connection = await get_connection()
 
     try:
-        with connection.cursor() as cursor:
+        async with connection.cursor() as cursor:
 
             query = """
                 SELECT *
@@ -28,9 +27,9 @@ def get_by_id(employee_id: int):
                 WHERE id = %s
             """
 
-            cursor.execute(query, (employee_id,))
+            await cursor.execute(query, (employee_id,))
 
-            employee = cursor.fetchone()
+            employee = await cursor.fetchone()
 
             if employee is None:
                 raise HTTPException(
@@ -41,14 +40,14 @@ def get_by_id(employee_id: int):
             return employee
 
     finally:
-        connection.close()
+        await connection.close()
 
 
-def create(employee: dict) -> None:
-    connection = get_connection()
+async def create(employee: dict) -> None:
+    connection = await get_connection()
 
     try:
-        with connection.cursor() as cursor:
+        async with connection.cursor() as cursor:
 
             query = """
                 INSERT INTO employee
@@ -69,7 +68,7 @@ def create(employee: dict) -> None:
             )
 
             try:
-                cursor.execute(query, values)
+                await cursor.execute(query, values)
 
             except UniqueViolation:
                 raise HTTPException(
@@ -77,18 +76,17 @@ def create(employee: dict) -> None:
                     detail=f"Employee with id {employee['id']} already exists",
                 )
 
-        connection.commit()
+        await connection.commit()
 
     finally:
-        connection.close()
+        await connection.close()
 
 
-def update(employee_id: int, employee: dict) -> None:
-
-    connection = get_connection()
+async def update(employee_id: int, employee: dict) -> None:
+    connection = await get_connection()
 
     try:
-        with connection.cursor() as cursor:
+        async with connection.cursor() as cursor:
 
             query = """
                 UPDATE employee
@@ -113,7 +111,7 @@ def update(employee_id: int, employee: dict) -> None:
                 employee_id,
             )
 
-            cursor.execute(query, values)
+            await cursor.execute(query, values)
 
             if cursor.rowcount == 0:
                 raise HTTPException(
@@ -121,25 +119,24 @@ def update(employee_id: int, employee: dict) -> None:
                     detail=f"Employee with id {employee_id} not found",
                 )
 
-        connection.commit()
+        await connection.commit()
 
     finally:
-        connection.close()
+        await connection.close()
 
 
-def delete(employee_id: int) -> None:
-
-    connection = get_connection()
+async def delete(employee_id: int) -> None:
+    connection = await get_connection()
 
     try:
-        with connection.cursor() as cursor:
+        async with connection.cursor() as cursor:
 
             query = """
                 DELETE FROM employee
                 WHERE id = %s
             """
 
-            cursor.execute(query, (employee_id,))
+            await cursor.execute(query, (employee_id,))
 
             if cursor.rowcount == 0:
                 raise HTTPException(
@@ -147,7 +144,7 @@ def delete(employee_id: int) -> None:
                     detail=f"Employee with id {employee_id} not found",
                 )
 
-        connection.commit()
+        await connection.commit()
 
     finally:
-        connection.close()
+        await connection.close()
