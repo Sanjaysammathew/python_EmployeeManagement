@@ -19,7 +19,6 @@ async def create_employee(employee: EmployeeCreate):
     salary_details = salary_service.calculate(employee.salary, employee.experience)
 
     employee_record = {
-        "id": employee.id,
         "name": employee.name,
         "salary": employee.salary,
         "experience": employee.experience,
@@ -29,12 +28,12 @@ async def create_employee(employee: EmployeeCreate):
         "net_salary": salary_details["net_salary"],
     }
 
-    # Database operation → await
-    await employee_repository.create(employee_record)
+    # Database generates the ID and returns it
+    employee_id = await employee_repository.create(employee_record)
 
     return {
         "message": "Employee created successfully",
-        "id": employee.id,
+        "id": employee_id,
         **salary_details,
     }
 

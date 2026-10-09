@@ -43,21 +43,20 @@ async def get_by_id(employee_id: int):
         await connection.close()
 
 
-async def create(employee: dict) -> None:
+async def create(employee: dict) -> int:
     connection = await get_connection()
 
     try:
         async with connection.cursor() as cursor:
-
             query = """
                 INSERT INTO employee
-                (id, name, salary, experience, annual_salary,
+                (name, salary, experience, annual_salary,
                  bonus, tax, net_salary)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                RETURNING id
             """
 
             values = (
-                employee["id"],
                 employee["name"],
                 employee["salary"],
                 employee["experience"],
@@ -69,14 +68,16 @@ async def create(employee: dict) -> None:
 
             try:
                 await cursor.execute(query, values)
+                result = await cursor.fetchone()
+                await connection.commit()
+                return result["id"]
 
             except UniqueViolation:
+                await connection.rollback()
                 raise HTTPException(
                     status_code=409,
-                    detail=f"Employee with id {employee['id']} already exists",
+                    detail="Employee already exists",
                 )
-
-        await connection.commit()
 
     finally:
         await connection.close()
