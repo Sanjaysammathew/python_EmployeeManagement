@@ -194,3 +194,40 @@ async def patch(employee_id: int, employee: dict, changed_fields: set):
 
     finally:
         await connection.close()
+
+
+async def search_employees(
+    name: str | None = None,
+    salary: int | None = None,
+    experience: int | None = None,
+):
+    connection = await get_connection()
+
+    try:
+        async with connection.cursor() as cursor:
+            query = "SELECT * FROM employee"
+            conditions = []
+            values = []
+
+            if name is not None:
+                conditions.append("name ILIKE %s")
+                values.append(f"%{name}%")
+
+            if salary is not None:
+                conditions.append("salary = %s")
+                values.append(salary)
+
+            if experience is not None:
+                conditions.append("experience = %s")
+                values.append(experience)
+
+            if conditions:
+                query += " WHERE " + " AND ".join(conditions)
+
+            query += " ORDER BY id"
+
+            await cursor.execute(query, tuple(values))
+            return await cursor.fetchall()
+
+    finally:
+        await connection.close()

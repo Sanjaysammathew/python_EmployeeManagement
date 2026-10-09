@@ -102,3 +102,11 @@ async def patch_employee(employee_id: int, employee: EmployeeUpdate):
     )
 
     return employee_record
+
+
+async def search_employees(
+    name: str | None = None,
+    salary: int | None = None,
+    experience: int | None = None,
+):
+    return await employee_repository.search_employees(name, salary, experience)

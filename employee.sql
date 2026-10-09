@@ -1,16 +1,18 @@
+Drop Table Employee;
+
 CREATE TABLE employee (
-    id INT PRIMARY KEY,
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    salary NUMERIC(10, 2) NOT NULL,
+    salary NUMERIC NOT NULL,
     experience INT NOT NULL,
-    annual_salary NUMERIC(10, 2),
-    bonus NUMERIC(10, 2),
-    tax NUMERIC(10, 2),
-    net_salary NUMERIC(10, 2)
-);
+    annual_salary NUMERIC,
+    bonus NUMERIC,
+    tax NUMERIC,
+    net_salary NUMERIC
+); 
+
 
 INSERT INTO employee (
-    id,
     name,
     salary,
     experience,
@@ -20,11 +22,14 @@ INSERT INTO employee (
     net_salary
 )
 VALUES
-(1, 'Sam', 30000, 2, 360000, 0, 0, 360000),
-(2, 'John', 40000, 3, 480000, 4000, 2000, 482000),
-(3, 'David', 50000, 5, 600000, 5000, 2500, 602500),
-(4, 'Priya', 35000, 4, 420000, 3500, 1750, 421750),
-(5, 'Rahul', 45000, 1, 540000, 0, 0, 540000);
+    ('Arun', 30000, 4, 360000, 3000, 1500, 361500),
+    ('Priya', 25000, 2, 300000, 0, 0, 300000),
+    ('Karthik', 40000, 6, 480000, 4000, 2000, 482000),
+    ('Divya', 35000, 3, 420000, 3500, 1750, 421750),
+    ('Rahul', 20000, 1, 240000, 0, 0, 240000);
 
-select * from employee
+select * from employee;
+
+
+
 

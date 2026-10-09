@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 
 from schemas.employee_schema import EmployeeCreate, EmployeeUpdate
 from services import employee_service
@@ -9,6 +9,15 @@ router = APIRouter(prefix="/employees")
 @router.get("/")
 async def get_employees():
     return await employee_service.get_all_employees()
+
+
+@router.get("/search")
+async def search_employees(
+    name: str | None = None,
+    salary: int | None = None,
+    experience: int | None = None,
+):
+    return await employee_service.search_employees(name, salary, experience)
 
 
 @router.get("/{employee_id}")
