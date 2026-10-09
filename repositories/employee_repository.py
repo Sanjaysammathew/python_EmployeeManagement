@@ -18,8 +18,23 @@ async def get_all(page: int, page_size: int):
             """
 
             await cursor.execute(query, (page_size, offset))
+            employees = await cursor.fetchall()
 
-            return await cursor.fetchall()
+        # Operations after fetchall()
+        returned = len(employees)
+
+        meta = {
+            "page": page,
+            "page_size": page_size,
+            "returned": returned,
+            "has_previous": page > 1,
+            "has_next": returned == page_size,
+        }
+
+        return {
+            "data": employees,
+            "meta": meta,
+        }
 
     finally:
         await connection.close()
