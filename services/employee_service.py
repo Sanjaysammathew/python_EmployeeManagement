@@ -6,8 +6,8 @@ from fastapi import HTTPException
 salary_service = SalaryService()
 
 
-async def get_all_employees():
-    return await employee_repository.get_all()
+async def get_all_employees(page: int, page_size: int):
+    return await employee_repository.get_all(page, page_size)
 
 
 async def get_employee_by_id(employee_id: int):

@@ -7,8 +7,11 @@ router = APIRouter(prefix="/employees")
 
 
 @router.get("/")
-async def get_employees():
-    return await employee_service.get_all_employees()
+async def get_employees(
+    page: int = Query(default=1, gte=1),
+    page_size: int = Query(default=10, ge=1, le=100),
+):
+    return await employee_service.get_all_employees(page, page_size)
 
 
 @router.get("/search")

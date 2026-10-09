@@ -3,12 +3,22 @@ from database import get_connection
 from fastapi import HTTPException
 
 
-async def get_all():
+async def get_all(page: int, page_size: int):
     connection = await get_connection()
 
     try:
+        offset = (page - 1) * page_size
+
         async with connection.cursor() as cursor:
-            await cursor.execute("SELECT * FROM employee")
+            query = """
+                SELECT *
+                FROM employee
+                ORDER BY id
+                LIMIT %s OFFSET %s
+            """
+
+            await cursor.execute(query, (page_size, offset))
+
             return await cursor.fetchall()
 
     finally:
