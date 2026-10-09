@@ -1,7 +1,7 @@
-from repositories import employee_repository
+from repositories import employee_repository, file_repository
 from schemas.employee_schema import EmployeeCreate, EmployeeUpdate
 from services.salary_service import SalaryService
-from fastapi import HTTPException
+from fastapi import HTTPException, UploadFile
 
 salary_service = SalaryService()
 
@@ -110,3 +110,45 @@ async def search_employees(
     experience: int | None = None,
 ):
     return await employee_repository.search_employees(name, salary, experience)
+
+
+async def upload_employee_resume(
+    employee_id: int,
+    file: UploadFile,
+):
+    # 1. Check whether the employee exists
+    employee = await employee_repository.get_by_id(employee_id)
+
+    if employee is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Employee not found",
+        )
+
+    # 2. Allow PDF files only
+    if not file.filename or not file.filename.lower().endswith(".pdf"):
+        raise HTTPException(
+            status_code=400,
+            detail="Only PDF files are allowed",
+        )
+
+    if file.content_type != "application/pdf":
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid file content type",
+        )
+
+    # 3. Save the actual file
+    file_path = await file_repository.save_file(file)
+
+    # 4. Store the path in PostgreSQL
+    await employee_repository.save_resume_path(
+        employee_id,
+        file_path,
+    )
+
+    return {
+        "message": "Resume uploaded successfully",
+        "employee_id": employee_id,
+        "file_path": file_path,
+    }

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, UploadFile, File
 
 from schemas.employee_schema import EmployeeCreate, EmployeeUpdate
 from services import employee_service
@@ -46,3 +46,14 @@ async def patch_employee(employee_id: int, employee: EmployeeUpdate):
 @router.delete("/{employee_id}")
 async def delete_employee(employee_id: int):
     return await employee_service.delete_employee(employee_id)
+
+
+@router.post("/{employee_id}/resume")
+async def upload_resume(
+    employee_id: int,
+    file: UploadFile = File(...),
+):
+    return await employee_service.upload_employee_resume(
+        employee_id,
+        file,
+    )

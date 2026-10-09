@@ -45,3 +45,5 @@ VALUES
 -- Display all employees
 SELECT * FROM employee ORDER BY id;
 
+	ALTER TABLE employee
+ADD COLUMN resume_path TEXT;

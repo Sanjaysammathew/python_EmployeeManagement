@@ -3,6 +3,9 @@ uvicorn
 psycopg[binary]
 pydantic
 python-dotenv
+python-multipart
+
+#python -m pip install aiofiles
 
 # pip install -r requirements.txt
 # uvicorn main:app --reload

@@ -241,3 +241,33 @@ async def search_employees(
 
     finally:
         await connection.close()
+
+
+async def save_resume_path(employee_id: int, file_path: str) -> None:
+    connection = await get_connection()
+
+    try:
+        async with connection.cursor() as cursor:
+            query = """
+                UPDATE employee
+                SET resume_path = %s
+                WHERE id = %s
+            """
+
+            await cursor.execute(query, (file_path, employee_id))
+
+            if cursor.rowcount == 0:
+                await connection.rollback()
+                raise HTTPException(
+                    status_code=404,
+                    detail=f"Employee with id {employee_id} not found",
+                )
+
+        await connection.commit()
+
+    except Exception:
+        await connection.rollback()
+        raise
+
+    finally:
+        await connection.close()
